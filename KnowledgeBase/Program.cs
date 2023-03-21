@@ -16,6 +16,7 @@ namespace FamilyTreeExample
             repository.Load(x => x.From(typeof(SiblingRule).Assembly));
             repository.Load(x => x.From(typeof(GrandparentRule).Assembly));
             repository.Load(x => x.From(typeof(AuntUncleRule).Assembly));
+            repository.Load(x => x.From(typeof(MarriedRule).Assembly));
 
             // 2. Compile rules
             var factory = repository.Compile();
@@ -58,33 +59,33 @@ namespace FamilyTreeExample
             session.Fire();
 
             // 6. Query and print results
-            var siblings = session.Query<SiblingOf>().ToList();
-            var grandparents = session.Query<GrandparentOf>().ToList();
-            var auntsUncles = session.Query<AuntUncleOf>().ToList();
-            
-            HashSet<string> result = new HashSet<string>();
-            
-            result.Add("Sibling relationships:");
+            var siblings = session.Query<SiblingOf>().Distinct().ToList();
+            var grandparents = session.Query<GrandparentOf>().Distinct().ToList();
+            var auntsUncles = session.Query<AuntUncleOf>().Distinct().ToList();
+            var marriages = session.Query<MarriedTo>().Distinct().ToList();
+
+            Console.WriteLine("Sibling relationships:");
             foreach (var sibling in siblings)
             {
-                result.Add($"{sibling.Sibling1.Name} is a sibling of {sibling.Sibling2.Name}");
+                Console.WriteLine($"{sibling.Sibling1.Name} is a sibling of {sibling.Sibling2.Name}");
             }
 
-            result.Add("\nGrandparent relationships:");
+            Console.WriteLine("\nGrandparent relationships:");
             foreach (var grandparent in grandparents)
             {
-                result.Add($"{grandparent.Grandparent.Name} is a grandparent of {grandparent.Grandchild.Name}");
+                Console.WriteLine($"{grandparent.Grandparent.Name} is a grandparent of {grandparent.Grandchild.Name}");
             }
 
-            result.Add("\nAunt/Uncle relationships:");
+            Console.WriteLine("\nAunt/Uncle relationships:");
             foreach (var auntUncle in auntsUncles)
             {
-                result.Add($"{auntUncle.AuntUncle.Name} is an aunt/uncle of {auntUncle.NieceNephew.Name}");
+                Console.WriteLine($"{auntUncle.AuntUncle.Name} is an aunt/uncle of {auntUncle.NieceNephew.Name}");
             }
 
-            foreach(var str in result)
+            Console.WriteLine("\nMarriage relationships:");
+            foreach (var marriage in marriages)
             {
-                Console.WriteLine(str);
+                Console.WriteLine($"{marriage.Spouse1.Name} is an spouse of {marriage.Spouse2.Name}");
             }
         }
     }

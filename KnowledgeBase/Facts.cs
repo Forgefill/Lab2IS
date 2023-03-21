@@ -6,15 +6,37 @@ using System.Threading.Tasks;
 
 namespace KnowledgeBase
 {
-    public class Person
+    public class Person : IEquatable<Person>
     {
         public string Name { get; set; }
+
+        public bool Equals(Person other)
+        {
+            if (other == null) return false;
+            return this.Name == other.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
     }
 
-    public class ParentOf
+    public class ParentOf : IEquatable<ParentOf>
     {
         public Person Parent { get; set; }
         public Person Child { get; set; }
+
+        public bool Equals(ParentOf other)
+        {
+            if (other == null) return false;
+            return this.Parent.Equals(other.Parent) && this.Child.Equals(other.Child);
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Parent.GetHashCode() ^ this.Child.GetHashCode();
+        }
     }
 
     public class SiblingOf
@@ -33,5 +55,11 @@ namespace KnowledgeBase
     {
         public Person AuntUncle { get; set; }
         public Person NieceNephew { get; set; }
+    }
+
+    public class MarriedTo
+    {
+        public Person Spouse1 { get; set; }
+        public Person Spouse2 { get; set; }
     }
 }
